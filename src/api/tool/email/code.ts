@@ -5,6 +5,7 @@ import { tencentCloudPost } from "@/utils/txc/index";
 const emailCodeSchema = z.object({
   subject: z.string(),
   email: z.email(),
+  title: z.string().optional(),
   operation: z.string(),
   code: z.string(),
   expiration: z.string(),
@@ -30,6 +31,7 @@ export const emailCode: Handler = async (ctx) => {
       Template: {
         TemplateID: 42435,
         TemplateData: JSON.stringify({
+          title: data.title || data.subject,
           operation: data.operation,
           code: data.code,
           expiration: data.expiration,
