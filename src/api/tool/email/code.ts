@@ -29,7 +29,7 @@ export const emailCode: Handler = async (ctx) => {
       Subject: data.subject,
       Destination: [data.email],
       Template: {
-        TemplateID: 42435,
+        TemplateID: 42509,
         TemplateData: JSON.stringify({
           title: data.title || data.subject,
           operation: data.operation,
