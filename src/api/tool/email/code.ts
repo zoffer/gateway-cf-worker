@@ -11,13 +11,7 @@ const emailCodeSchema = z.object({
   expiration: z.string(),
 });
 
-export const emailCode: Handler = async (ctx) => {
-  const body = await ctx.req.json();
-  const res = emailCodeSchema.safeParse(body);
-  if (!res.success) {
-    return ctx.json({ error: z.prettifyError(res.error) }, 400);
-  }
-  const data = res.data;
+async function sendEmailCode(data: z.infer<typeof emailCodeSchema>) {
   await tencentCloudPost({
     host: "ses.tencentcloudapi.com",
     service: "ses",
@@ -39,5 +33,15 @@ export const emailCode: Handler = async (ctx) => {
       },
     },
   });
+}
+
+export const emailCode: Handler = async (ctx) => {
+  const body = await ctx.req.json();
+  const res = emailCodeSchema.safeParse(body);
+  if (!res.success) {
+    return ctx.json({ error: z.prettifyError(res.error) }, 400);
+  }
+  const data = res.data;
+  ctx.executionCtx.waitUntil(sendEmailCode(data));
   return ctx.json({ ok: true });
 };
